@@ -1,0 +1,7 @@
+<IfModule mod_rewrite.c>
+RewriteEngine on
+
+RewriteRule ^laporan$ index.php [L]
+
+Options All -Indexes
+</IfModule>

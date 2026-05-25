@@ -1,0 +1,71 @@
+version: '3.8'
+
+services:
+
+  # ─── Web Server: Apache + PHP 7.4 ───────────────────────────────────────────
+  web:
+    build:
+      context: .
+      dockerfile: php/Dockerfile
+    container_name: antrian_web
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./www:/var/www/html          # letakkan source code website di sini
+      - ./apache/sites-available:/etc/apache2/sites-available
+      - ./logs/apache:/var/log/apache2
+    environment:
+      - TZ=Asia/Jakarta
+    depends_on:
+      - db
+    networks:
+      - antrian_net
+
+  # ─── Database: MySQL 5.7 (kompatibel dengan Hostinger) ─────────────────────
+  db:
+    image: mysql:5.7
+    container_name: antrian_db
+    restart: unless-stopped
+    ports:
+      - "3306:3306"                  # bisa diakses dari DBeaver / Sequel Pro
+    volumes:
+      - db_data:/var/lib/mysql
+      - ./mysql/conf.d:/etc/mysql/conf.d
+      - ./mysql/init:/docker-entrypoint-initdb.d  # taruh .sql dump Hostinger di sini
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_DATABASE: antrian_db
+      MYSQL_USER: antrian_user
+      MYSQL_PASSWORD: antrian_pass
+      TZ: Asia/Jakarta
+    networks:
+      - antrian_net
+
+  # ─── phpMyAdmin ─────────────────────────────────────────────────────────────
+  phpmyadmin:
+    image: phpmyadmin:5.2
+    container_name: antrian_pma
+    restart: unless-stopped
+    ports:
+      - "8080:80"                    # akses via http://localhost:8080
+    environment:
+      PMA_HOST: db
+      PMA_PORT: 3306
+      PMA_USER: root
+      PMA_PASSWORD: rootpassword
+      UPLOAD_LIMIT: 256M             # agar bisa import dump besar
+      TZ: Asia/Jakarta
+    depends_on:
+      - db
+    networks:
+      - antrian_net
+
+volumes:
+  db_data:
+    driver: local
+
+networks:
+  antrian_net:
+    driver: bridge

@@ -1,0 +1,5 @@
+[17-Dec-2021 07:15:21 ASIA/JAKARTA] PHP Deprecated:  implode(): Passing glue string after array is deprecated. Swap the parameters in /home/u1471031/public_html/antrian/sistemantrian/pengunjung/pages/beranda/prosesAhu.php on line 41
+[17-Dec-2021 07:15:24 ASIA/JAKARTA] PHP Fatal error:  Uncaught Error: Call to undefined function printer_open() in /home/u1471031/public_html/antrian/sistemantrian/pengunjung/pages/beranda/print.php:31
+Stack trace:
+#0 {main}
+  thrown in /home/u1471031/public_html/antrian/sistemantrian/pengunjung/pages/beranda/print.php on line 31
